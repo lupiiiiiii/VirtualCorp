@@ -560,6 +560,9 @@ EOF
         admin@127.0.0.1:vcorp_auditor.pub \
         || return 1
 
+    # RouterOS necessita un moment per registrar el fitxer pujat
+    sleep 3
+
     ssh \
         -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null \
