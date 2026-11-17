@@ -546,6 +546,35 @@ EOF
         return 1
     fi
 
+    # -----------------------------------------------------
+    # Instal·lar clau pública de l'auditor (professor)
+    # -----------------------------------------------------
+
+    log_info "Injectant clau SSH de l'auditor"
+
+    scp \
+        -o StrictHostKeyChecking=no \
+        -o UserKnownHostsFile=/dev/null \
+        -P "$ssh_port" \
+        "$AUDIT_PUB_KEY_FILE" \
+        admin@127.0.0.1:vcorp_auditor.pub \
+        || return 1
+
+    ssh \
+        -o StrictHostKeyChecking=no \
+        -o UserKnownHostsFile=/dev/null \
+        -p "$ssh_port" \
+        admin@127.0.0.1 <<'EOF'
+
+/user ssh-keys import user=sysadmin public-key-file=vcorp_auditor.pub
+
+EOF
+
+    if [[ $? -ne 0 ]]; then
+        log_err "No s'ha pogut instal·lar la clau SSH de l'auditor."
+        return 1
+    fi
+
     log_ok "Bootstrap de '$name' completat"
 }
 
